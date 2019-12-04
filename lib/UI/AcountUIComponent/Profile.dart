@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:shooops/UI/AcountUIComponent/SettingAcount.dart';
 import 'package:shooops/UI/LoginOrSignup/Signup.dart';
 import 'package:shooops/models/user.dart';
 import 'package:shooops/services/auth.dart';
+import 'package:shooops/Api/ProductApi.dart';
 
 class profil extends StatefulWidget {
   profil({this.username, this.emailIds, this.imageUrls});
@@ -120,6 +122,11 @@ class _profilState extends State<profil> {
                   ),
                 ),
               ),
+              FlatButton(
+                child: Text("data"),
+                onPressed: () {
+                },
+              )
             ],
           ),
           Container(),
@@ -304,7 +311,7 @@ class _profilState extends State<profil> {
     );
   }
 
-  Text buildText(username,User user) {
+  Text buildText(username, User user) {
     setState(() {});
     if (username != null) {
       return Text(
