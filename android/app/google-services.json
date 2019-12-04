@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "105454477385",
+    "firebase_url": "https://shooops-b7689.firebaseio.com",
+    "project_id": "shooops-b7689",
+    "storage_bucket": "shooops-b7689.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105454477385:android:ac81cdd367d8cee580df98",
+        "android_client_info": {
+          "package_name": "com.lol.shops"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105454477385-sg4879vc3m8ip4amo6jgqiuod71jd0jn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lol.shops",
+            "certificate_hash": "b8380ba47071536746e3e97e5e50b243b7b59e1a"
+          }
+        },
+        {
+          "client_id": "105454477385-4smk12h51ph1eb3t8hr3g6q3u9g04of1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYYmVEmok90Z-PEjebtgmzW5eQp3pdGwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105454477385-4smk12h51ph1eb3t8hr3g6q3u9g04of1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
