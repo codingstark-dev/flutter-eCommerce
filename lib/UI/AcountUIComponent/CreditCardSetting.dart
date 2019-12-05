@@ -18,7 +18,7 @@ var _txtCustomSub = TextStyle(
 
 /// Declare example Credit Card
 String numberCC = "9867 - 2312 - 3212 - 4213";
-String nameCC = "Alissa Hearth";
+String nameCC = "Himanshu maurya";
 String cvvCC = "765";
 
 class CreditCardSetting extends StatefulWidget {
