@@ -122,11 +122,11 @@ class _profilState extends State<profil> {
                   ),
                 ),
               ),
-              FlatButton(
-                child: Text("data"),
-                onPressed: () {
-                },
-              )
+              // FlatButton(
+              //   child: Text("data"),
+              //   onPressed: () {
+              //   },
+              // )
             ],
           ),
           Container(),
