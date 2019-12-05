@@ -333,7 +333,7 @@ class _profilState extends State<profil> {
       return Text(
           (email == null)
               ? "Guest person"
-              : (email != null) ? "Updating" : "Something Wents Wrong",
+              : (email != null) ? "Bug Not fixed" : "Something Wents Wrong",
           style: _txtName);
     }
   }
