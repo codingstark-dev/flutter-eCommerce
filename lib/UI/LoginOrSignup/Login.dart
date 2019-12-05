@@ -582,11 +582,11 @@ class _ButtonCustomFacebookState extends State<ButtonCustomFacebook> {
             InkWell(
               onTap: () async {
                 final result = await AuthService().facebookLogin();
-                if (result != true) {
+                if (result != null) {
                   Fluttertoast.showToast(msg: "Sucessfull Login!!");
                   return Navigator.of(context).pushReplacement(PageRouteBuilder(
                       pageBuilder: (_, __, ___) => new bottomNavigationBar()));
-                } else if (result == false) {
+                } else if (result == null) {
                   Fluttertoast.showToast(msg: "Samething Went Wrong!");
                 }
               },

@@ -172,24 +172,24 @@ class _profilState extends State<profil> {
                       height: 2.0,
                     ),
                   ),
-                  category(
-                    txt: "Payments",
-                    padding: 35.0,
-                    image: "assets/icon/creditAcount.png",
-                    tap: () {
-                      Navigator.of(context).push(PageRouteBuilder(
-                          pageBuilder: (_, __, ___) =>
-                              new CreditCardSetting()));
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, left: 85.0, right: 30.0),
-                    child: Divider(
-                      color: Colors.black12,
-                      height: 2.0,
-                    ),
-                  ),
+                  // category(
+                  //   txt: "Payments",
+                  //   padding: 35.0,
+                  //   image: "assets/icon/creditAcount.png",
+                  //   tap: () {
+                  //     Navigator.of(context).push(PageRouteBuilder(
+                  //         pageBuilder: (_, __, ___) =>
+                  //             new CreditCardSetting()));
+                  //   },
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(
+                  //       top: 20.0, left: 85.0, right: 30.0),
+                  //   child: Divider(
+                  //     color: Colors.black12,
+                  //     height: 2.0,
+                  //   ),
+                  // ),
                   category(
                     txt: "Message",
                     padding: 26.0,
@@ -208,12 +208,13 @@ class _profilState extends State<profil> {
                     ),
                   ),
                   category(
-                    txt: "My Orders",
+                    txt: "Order History",
                     padding: 23.0,
                     image: "assets/icon/truck.png",
                     tap: () {
-                      Navigator.of(context).push(PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => new Order()));
+                      // Navigator.of(context).push(PageRouteBuilder(
+                      //     pageBuilder: (_, __, ___) => new Order()));
+                      Fluttertoast.showToast(msg: "Not working");
                     },
                   ),
                   Padding(

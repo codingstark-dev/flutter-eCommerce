@@ -285,6 +285,7 @@ class AuthService {
             facebookLoginResult.accessToken;
         final AuthCredential credential = FacebookAuthProvider.getCredential(
             accessToken: facebookAccessToken.token);
+            fblogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
         final FirebaseUser user =
             (await auth.signInWithCredential(credential)).user;
         assert(user.email != null);
@@ -321,7 +322,7 @@ class AuthService {
         assert(await user.getIdToken() != null);
         currentUser = await auth.currentUser();
         assert(user.uid == currentUser.uid);
-        
+        return true;
       }
     } catch (e) {
       print(e);
