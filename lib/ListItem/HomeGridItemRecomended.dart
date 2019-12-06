@@ -1,8 +1,68 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Widget buildGridFilesToExport(){
+//   return new StreamBuilder(
+//     stream: Firestore.instance
+//         .collection('users')
+//         .document()
+//         .collection('events')
+//         .document()
+//         .snapshots(),
+//     builder: (context, snapshot) {
+//       print(snapshot);
+//       if (snapshot.hasError)
+//         return new Text('Error: ${snapshot.error}');
+//       switch (snapshot.connectionState) {
+//         case ConnectionState.waiting: return new Text('Loading...');
+//         default:
+//           List videosList = snapshot.data['thumbnailsUrl'];
+//           return
+//             videosList != null ?
+//             new GridView.count(
+//               crossAxisCount: 2,
+//               childAspectRatio: 1,
+//               children: List.generate(snapshot.data['thumbnailsUrl'].length, (index) {
+//                 return Container(
+//                     padding: EdgeInsets.all(5.0),
+//                     child: Column(
+//                       children: <Widget>[
+//                         Container(
+//                           margin: EdgeInsets.only(bottom: 2.0),
+//                           decoration: BoxDecoration(
+//                             borderRadius: BorderRadius.all(Radius.circular(5.0)),
+//                             image: DecorationImage(
+//                               image: NetworkImage(snapshot.data['thumbnailsUrl'][index]),
+//                               fit: BoxFit.cover,
+//                             ),
+//                           ),
+//                         ),
+
+//                       ],
+//                     )
+//                 );
+//               }),
+//             )
+//                 :
+//             Center(
+//                 child: Container(
+//                   width: 300,
+//                   child: Text(
+//                     'Ancora nessun video!\nVai nella Cartella amici e accetta i loro video!',
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       fontFamily: 'acumin-pro',
+//                       fontSize: 22,
+//                     ),
+//                   ),
+//                 )
+//             );
+//       }
+//     },
+//   );
+// }
 
 
-class GridItem extends StatefulWidget {
+class GridItem{
+  
  final String id;
   final String img;
   final String title;
@@ -18,23 +78,7 @@ class GridItem extends StatefulWidget {
         this.rattingValue,
         this.itemSale,
         this.description});
-
-  @override
-  _GridItemState createState() => _GridItemState();
 }
-
-class _GridItemState extends State<GridItem> {
- 
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-       child: Container(),
-    );
-  }
-}
-
-
 
 List<GridItem> gridItemArray = [
   GridItem(
@@ -118,67 +162,3 @@ List<GridItem> gridItemArray = [
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
 ];
-
-
-
-
-Widget buildGridFilesToExport(){
-  return new StreamBuilder(
-    stream: Firestore.instance
-        .collection('users')
-        .document()
-        .collection('events')
-        .document()
-        .snapshots(),
-    builder: (context, snapshot) {
-      print(snapshot);
-      if (snapshot.hasError)
-        return new Text('Error: ${snapshot.error}');
-      switch (snapshot.connectionState) {
-        case ConnectionState.waiting: return new Text('Loading...');
-        default:
-          List videosList = snapshot.data['thumbnailsUrl'];
-          return
-            videosList != null ?
-            new GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 1,
-              children: List.generate(snapshot.data['thumbnailsUrl'].length, (index) {
-                return Container(
-                    padding: EdgeInsets.all(5.0),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(bottom: 2.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                            image: DecorationImage(
-                              image: NetworkImage(snapshot.data['thumbnailsUrl'][index]),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    )
-                );
-              }),
-            )
-                :
-            Center(
-                child: Container(
-                  width: 300,
-                  child: Text(
-                    'Ancora nessun video!\nVai nella Cartella amici e accetta i loro video!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'acumin-pro',
-                      fontSize: 22,
-                    ),
-                  ),
-                )
-            );
-      }
-    },
-  );
-}

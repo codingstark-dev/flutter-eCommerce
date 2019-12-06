@@ -173,6 +173,7 @@ class AuthService {
 
         if (documents.length == 0) {
           Firestore.instance.collection("users").document(user.uid).setData({
+           
             "id": user.uid,
             "username": user.displayName,
             "photo": user.photoUrl

@@ -228,66 +228,66 @@ if (mounted) {
     final firestore = Firestore.instance;
 
     Future getdata() async {
-      await for (var snapshot in firestore.collection("products").snapshots()) {
+      await for (var snapshot in firestore.collection("Products").snapshots()) {
         for (var productdetails in snapshot.documents) {
-          print(productdetails.data);
+          print(productdetails.data["ProName"]);
         }
       }
     }
 
     /// ListView a WeekPromotion Component
-    //! var promoHorizontalList = Container(
-    //   color: Colors.white,
-    //   height: 230.0,
-    //   padding: EdgeInsets.only(bottom: 40.0),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: <Widget>[
-    //       Padding(
-    //           padding: EdgeInsets.only(left: 20.0, top: 15.0, bottom: 3.0),
-    //           child: Text(
-    //             "Week Promotion",
-    //             style: TextStyle(
-    //                 fontSize: 15.0,
-    //                 fontFamily: "Sans",
-    //                 fontWeight: FontWeight.w700),
-    //           )),
-    //       Expanded(
-    //         child: ListView(
-    //           shrinkWrap: true,
-    //           padding: EdgeInsets.only(top: 10.0),
-    //           scrollDirection: Axis.horizontal,
-    //           children: <Widget>[
-    //             Padding(padding: EdgeInsets.only(left: 20.0)),
-    //             InkWell(
-    //                 onTap: getdata,
-    //                 child: Image.asset("assets/imgPromo/Discount1.png")),
-    //             Padding(padding: EdgeInsets.only(left: 10.0)),
-    //             InkWell(
-    //                 onTap: onClickWeekPromotion,
-    //                 child: Image.asset("assets/imgPromo/Discount3.png")),
-    //             Padding(padding: EdgeInsets.only(left: 10.0)),
-    //             InkWell(
-    //                 onTap: onClickWeekPromotion,
-    //                 child: Image.asset("assets/imgPromo/Discount2.png")),
-    //             Padding(padding: EdgeInsets.only(left: 10.0)),
-    //             InkWell(
-    //                 onTap: onClickWeekPromotion,
-    //                 child: Image.asset("assets/imgPromo/Discount4.png")),
-    //             Padding(padding: EdgeInsets.only(left: 10.0)),
-    //             InkWell(
-    //                 onTap: onClickWeekPromotion,
-    //                 child: Image.asset("assets/imgPromo/Discount5.png")),
-    //             Padding(padding: EdgeInsets.only(left: 10.0)),
-    //             InkWell(
-    //                 onTap: onClickWeekPromotion,
-    //                 child: Image.asset("assets/imgPromo/Discount6.png")),
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+   var promoHorizontalList = Container(
+      color: Colors.white,
+      height: 230.0,
+      padding: EdgeInsets.only(bottom: 40.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(left: 20.0, top: 15.0, bottom: 3.0),
+              child: Text(
+                "Week Promotion",
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontFamily: "Sans",
+                    fontWeight: FontWeight.w700),
+              )),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(top: 10.0),
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                Padding(padding: EdgeInsets.only(left: 20.0)),
+                InkWell(
+                    onTap: getdata,
+                    child: Image.asset("assets/imgPromo/Discount1.png")),
+                Padding(padding: EdgeInsets.only(left: 10.0)),
+                InkWell(
+                    onTap: onClickWeekPromotion,
+                    child: Image.asset("assets/imgPromo/Discount3.png")),
+                Padding(padding: EdgeInsets.only(left: 10.0)),
+                InkWell(
+                    onTap: onClickWeekPromotion,
+                    child: Image.asset("assets/imgPromo/Discount2.png")),
+                Padding(padding: EdgeInsets.only(left: 10.0)),
+                InkWell(
+                    onTap: onClickWeekPromotion,
+                    child: Image.asset("assets/imgPromo/Discount4.png")),
+                Padding(padding: EdgeInsets.only(left: 10.0)),
+                InkWell(
+                    onTap: onClickWeekPromotion,
+                    child: Image.asset("assets/imgPromo/Discount5.png")),
+                Padding(padding: EdgeInsets.only(left: 10.0)),
+                InkWell(
+                    onTap: onClickWeekPromotion,
+                    child: Image.asset("assets/imgPromo/Discount6.png")),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
 
     /// FlashSale component
     // !var flashSell = Container(
@@ -613,7 +613,7 @@ if (mounted) {
                 ),
 
                 /// Call var promoHorizontalList
-                // promoHorizontalList,
+                promoHorizontalList,
 
                 /// Call var a flashSell, i am sorry Typo :v
                 // flashSell,
