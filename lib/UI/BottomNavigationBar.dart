@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:shooops/Api/ProductApi.dart';
 
 import 'package:shooops/UI/BrandUIComponent/BrandLayout.dart';
 import 'package:shooops/UI/CartUIComponent/CartLayout.dart';
@@ -23,23 +24,21 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
       case 0:
         return Menu();
       case 1:
-      return Container(
-        child: Center(
-          child: FlatButton(onPressed: (){
-Fluttertoast.showToast(msg: 'Working ON It');
-          },child: Text("Under Construction"),),
-        ),
-      );
-        // return brand();
+        return Container(
+          child: Center(
+            child: FlatButton(
+              onPressed: () {
+                Fluttertoast.showToast(msg: 'Working ON It');
+              },
+              child: Text("Under Construction"),
+            ),
+          ),
+        );
+      // return brand();
       case 2:
         return Cart();
       case 3:
-        return MultiProvider(
-          
-          child: profil(), providers: [
-           Provider<AuthService>(builder: (context)=> AuthService()) 
-          ],
-        );
+        return profil();
         break;
       default:
         return Menu();

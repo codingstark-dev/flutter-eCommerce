@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:shooops/ListItem/HomeGridItemRecomended.dart';
 import 'package:shooops/models/user.dart';
 import 'package:shooops/screens/Wrapper.dart';
 import 'package:shooops/services/auth.dart';
@@ -16,12 +18,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<User>.value(
-      value: AuthService().user,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Wrapper(),
-      ),
+    return MultiProvider(
+      providers: [
+        StreamProvider<User>.value(
+          value: AuthService().user,
+        ),
+          Provider<AuthService>(builder: (context) => AuthService()),
+          // Provider<FileData>(builder: (BuildContext context)=> FileData())
+      ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Wrapper(),
+          ),
     );
   }
 }

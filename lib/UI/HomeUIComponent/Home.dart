@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:shooops/Api/ProductApi.dart';
 import 'package:shooops/Library/carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:shooops/ListItem/HomeGridItemRecomended.dart';
@@ -19,7 +21,7 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> with TickerProviderStateMixin {
   /// Declare class GridItem from HomeGridItemReoomended.dart in folder ListItem
   GridItem gridItem;
-
+  List<FileData> files = new List();
   bool isStarted = false;
   var hourssub, minutesub, secondsub;
 
@@ -33,12 +35,11 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
       secondsub = seconds.stream.listen(null);
       secondsub.onData((Duration d) {
         // print(d);
-if (mounted) {
-        setState(() {
-          return second = d.inSeconds;
-        });
-  
-}
+        if (mounted) {
+          setState(() {
+            return second = d.inSeconds;
+          });
+        }
       });
     }
 
@@ -46,24 +47,22 @@ if (mounted) {
       minutesub = minutes.stream.listen(null);
       minutesub.onData((Duration d) {
         // print(d);
-if (mounted) {
-  setState(() {
-           minute = d.inMinutes;
-        });
-}
-        
+        if (mounted) {
+          setState(() {
+            minute = d.inMinutes;
+          });
+        }
       });
     }
     if (this.hourssub == null) {
       hourssub = hours.stream.listen(null);
       hourssub.onData((Duration d) {
         // print(d);
-if (mounted) {
-  setState(() {
-           hourstime = d.inHours;
-        });
-}
-        
+        if (mounted) {
+          setState(() {
+            hourstime = d.inHours;
+          });
+        }
       });
     }
   }
@@ -74,7 +73,8 @@ if (mounted) {
     hours = new CountDown(new Duration(hours: 24));
     minutes = new CountDown(new Duration(hours: 1));
     seconds = new CountDown(new Duration(minutes: 1));
-
+    FileData().streamDatas();
+    print(FileData().streamDatas().listen((result)=> print(result)));
     onStartStopPress();
     // TODO: implement initState
     super.initState();
@@ -100,7 +100,7 @@ if (mounted) {
             );
           }));
     };
-
+  
     /// Navigation to PromoDetail.dart if user Click icon in Week Promotion
     var onClickWeekPromotion = () {
       Navigator.of(context).push(PageRouteBuilder(
@@ -225,18 +225,19 @@ if (mounted) {
       ),
     );
 
-    final firestore = Firestore.instance;
+    // final filedats = Provider.of<List<FileData>>(context);
 
-    Future getdata() async {
-      await for (var snapshot in firestore.collection("Products").snapshots()) {
-        for (var productdetails in snapshot.documents) {
-          print(productdetails.data["ProName"]);
-        }
-      }
-    }
+    // Future getdata() async {
+    //   await for (var snapshot in firestore.collection("Products").snapshots()) {
+    //     for (var productdetails in snapshot.documents) {
+    //       print(productdetails.data["ProName"]);
+    //     }
+    //   }
+    // }
+    final firebaseurl = ProductApi;
 
     /// ListView a WeekPromotion Component
-   var promoHorizontalList = Container(
+    var promoHorizontalList = Container(
       color: Colors.white,
       height: 230.0,
       padding: EdgeInsets.only(bottom: 40.0),
@@ -260,7 +261,7 @@ if (mounted) {
               children: <Widget>[
                 Padding(padding: EdgeInsets.only(left: 20.0)),
                 InkWell(
-                    onTap: getdata,
+                    onTap: () => print(""),
                     child: Image.asset("assets/imgPromo/Discount1.png")),
                 Padding(padding: EdgeInsets.only(left: 10.0)),
                 InkWell(
@@ -551,6 +552,18 @@ if (mounted) {
       ),
     );
 
+// Future getData() async {
+//     try {
+
+//       if (firestore != null) {
+//         return  Firestore.instance.collection("testcrud").snapshots();
+//       }
+//       return false;
+//     } catch (e) {
+//       print(e.toString());
+//       return true;
+//     }
+//   }
     ///  grid item in bottom of Category
     var grid = SingleChildScrollView(
       child: Container(
@@ -570,23 +583,19 @@ if (mounted) {
             ),
 
             /// To set GridView item
-            StreamBuilder<Object>(
-                stream: null,
-                builder: (context, snapshot) {
-                  return GridView.count(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0),
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 17.0,
-                      childAspectRatio: 0.545,
-                      crossAxisCount: 2,
-                      primary: false,
-                      children: List.generate(
-                        gridItemArray.length,
-                        (index) => ItemGrid(gridItemArray[index]),
-                      ));
-                })
+
+            GridView.count(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 17.0,
+                childAspectRatio: 0.545,
+                crossAxisCount: 2,
+                primary: false,
+                children: List.generate(
+                  files.length,
+                  (index) => ItemGrid(files[index]),
+                ))
           ],
         ),
       ),
@@ -638,165 +647,178 @@ if (mounted) {
       ),
     );
   }
+
+
 }
 
+//  Stream<List<FileData>> streamDatas() {
+//     var ref = Firestore.instance.collection('Products').snapshots();
+//     return ref.map((data) => data.documents.map((doc) => FileData.fromFirestore(doc)).toList());
+//   }
 /// ItemGrid in bottom item "Recomended" item
 class ItemGrid extends StatelessWidget {
   /// Get data from HomeGridItem.....dart class
   GridItem gridItem;
-  ItemGrid(this.gridItem);
+  FileData file;
+  ItemGrid(this.file);
+ List<FileData> files = new List();
 
   @override
   Widget build(BuildContext context) {
+        final datas = Provider.of<FileData>(context);
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(PageRouteBuilder(
-            pageBuilder: (_, __, ___) => new DetailProductAll(gridItem),
-            transitionDuration: Duration(milliseconds: 900),
+    return  
+     InkWell(
+            onTap: () {
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => new DetailProductAll(file),
+                  transitionDuration: Duration(milliseconds: 900),
 
-            /// Set animation Opacity in route to DetailProductAll layout
-            transitionsBuilder:
-                (_, Animation<double> animation, __, Widget child) {
-              return Opacity(
-                opacity: animation.value,
-                child: child,
-              );
-            }));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xFF656565).withOpacity(0.15),
-                blurRadius: 4.0,
-                spreadRadius: 1.0,
+                  /// Set animation Opacity in route to DetailProductAll layout
+                  transitionsBuilder:
+                      (_, Animation<double> animation, __, Widget child) {
+                    return Opacity(
+                      opacity: animation.value,
+                      child: child,
+                    );
+                  }));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF656565).withOpacity(0.15),
+                      blurRadius: 4.0,
+                      spreadRadius: 1.0,
 //           offset: Offset(4.0, 10.0)
-              )
-            ]),
-        child: Wrap(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                /// Set Animation image to DetailProductAll layout
-                Hero(
-                  tag: "hero-grid-${gridItem.id}",
-                  child: Material(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (BuildContext context, _, __) {
-                              return new Material(
-                                color: Colors.black54,
-                                child: Container(
-                                  padding: EdgeInsets.all(30.0),
-                                  child: InkWell(
-                                    child: Hero(
-                                        tag: "hero-grid-${gridItem.id}",
-                                        child: Image.asset(
-                                          gridItem.img,
-                                          width: 300.0,
-                                          height: 300.0,
-                                          alignment: Alignment.center,
-                                          fit: BoxFit.contain,
-                                        )),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                            transitionDuration: Duration(milliseconds: 500)));
-                      },
-                      child: Container(
-                        height: mediaQueryData.size.height / 3.3,
-                        width: 200.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(7.0),
-                                topRight: Radius.circular(7.0)),
-                            image: DecorationImage(
-                                image: AssetImage(gridItem.img),
-                                fit: BoxFit.cover)),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.only(top: 7.0)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    gridItem.title,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        letterSpacing: 0.5,
-                        color: Colors.black54,
-                        fontFamily: "Sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13.0),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.only(top: 1.0)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    gridItem.price,
-                    style: TextStyle(
-                        fontFamily: "Sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.0),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                  child: Row(
+                    )
+                  ]),
+              child: Wrap(
+                children: <Widget>[
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            gridItem.rattingValue,
-                            style: TextStyle(
-                                fontFamily: "Sans",
-                                color: Colors.black26,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12.0),
+                      /// Set Animation image to DetailProductAll layout
+                      Hero(
+                        tag: "hero-grid-${datas.id}",
+                        child: Material(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) {
+                                    return new Material(
+                                      color: Colors.black54,
+                                      child: Container(
+                                        padding: EdgeInsets.all(30.0),
+                                        child: InkWell(
+                                          child: Hero(
+                                              tag: "hero-grid-${datas.id}",
+                                              child: Image.network(
+                                                datas.img,
+                                                width: 300.0,
+                                                height: 300.0,
+                                                alignment: Alignment.center,
+                                                fit: BoxFit.contain,
+                                              )),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  transitionDuration: Duration(milliseconds: 500)));
+                            },
+                            child: Container(
+                              height: mediaQueryData.size.height / 3.3,
+                              width: 200.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(7.0),
+                                      topRight: Radius.circular(7.0)),
+                                  image: DecorationImage(
+                                      image: NetworkImage(datas.img),
+                                      fit: BoxFit.cover)),
+                            ),
                           ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                            size: 14.0,
-                          )
-                        ],
+                        ),
                       ),
-                      Text(
-                        gridItem.itemSale,
-                        style: TextStyle(
-                            fontFamily: "Sans",
-                            color: Colors.black26,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12.0),
-                      )
+                      Padding(padding: EdgeInsets.only(top: 7.0)),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text(
+                          datas.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              letterSpacing: 0.5,
+                              color: Colors.black54,
+                              fontFamily: "Sans",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13.0),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 1.0)),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text(
+                          datas.price,
+                          style: TextStyle(
+                              fontFamily: "Sans",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14.0),
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  datas.rattingValue,
+                                  style: TextStyle(
+                                      fontFamily: "Sans",
+                                      color: Colors.black26,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12.0),
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                  size: 14.0,
+                                )
+                              ],
+                            ),
+                            Text(
+                              datas.itemSale,
+                              style: TextStyle(
+                                  fontFamily: "Sans",
+                                  color: Colors.black26,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12.0),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
+
+      }
+    
   }
-}
+
 
 /// Component FlashSaleItem
 class FlashSaleItem extends StatelessWidget {

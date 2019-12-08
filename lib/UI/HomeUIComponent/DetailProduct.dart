@@ -9,12 +9,13 @@ import 'package:flutter_rating/flutter_rating.dart';
 import 'package:shooops/UI/HomeUIComponent/ReviewLayout.dart';
 
 class DetailProductAll extends StatefulWidget {
-  GridItem gridItem;
+  // GridItem gridItem;
+  FileData fileData;
 
-  DetailProductAll(this.gridItem);
+  DetailProductAll(this.fileData);
 
   @override
-  _DetailProductAllState createState() => _DetailProductAllState(gridItem);
+  _DetailProductAllState createState() => _DetailProductAllState(fileData);
 }
 
 /// Detail Product for Recomended grid in home screen
@@ -22,8 +23,8 @@ class _DetailProductAllState extends State<DetailProductAll> {
   num rating = 3.5;
   int starCount = 5;
   /// Declaration List item HomeGridItemRe....dart Class
-  final GridItem gridItem;
-  _DetailProductAllState(this.gridItem);
+  final FileData fileData;
+  _DetailProductAllState(this.fileData);
 
   @override
   static BuildContext ctx;
@@ -61,7 +62,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                         padding: const EdgeInsets.only(
                             top: 20.0, left: 20.0, right: 20.0, bottom: 20.0),
                         child: Text(
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.",
+                            fileData.description,
                             style: _detailText),
                       ),
                       Padding(
@@ -244,7 +245,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                   Container(
                     height: 300.0,
                     child: Hero(
-                      tag: "hero-grid-${gridItem.id}",
+                      tag: "hero-grid-${fileData.id}",
                       child: Material(
                         child: new Carousel(
                           dotColor: Colors.black26,
@@ -253,9 +254,9 @@ class _DetailProductAllState extends State<DetailProductAll> {
                           autoplay: false,
                           boxFit: BoxFit.cover,
                           images: [
-                            AssetImage(gridItem.img),
-                            AssetImage(gridItem.img),
-                            AssetImage(gridItem.img),
+                            AssetImage(fileData.img),
+                            AssetImage(fileData.img),
+                            AssetImage(fileData.img),
                           ],
                         ),
                       ),
@@ -276,12 +277,12 @@ class _DetailProductAllState extends State<DetailProductAll> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            gridItem.title,
+                            fileData.title,
                             style: _customTextStyle,
                           ),
                           Padding(padding: EdgeInsets.only(top: 5.0)),
                           Text(
-                            gridItem.price,
+                            fileData.price,
                             style: _customTextStyle,
                           ),
                           Padding(padding: EdgeInsets.only(top: 10.0)),
@@ -312,7 +313,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            gridItem.rattingValue,
+                                            fileData.rattingValue,
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
@@ -332,7 +333,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 15.0),
                                   child: Text(
-                                    gridItem.itemSale,
+                                    fileData.itemSale,
                                     style: TextStyle(
                                         color: Colors.black54,
                                         fontSize: 13.0,
@@ -442,7 +443,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                   right: 20.0,
                                   bottom: 10.0,
                                   left: 20.0),
-                              child: Text(gridItem.description,
+                              child: Text(fileData.description,
                                   style: _detailText),
                             ),
                             Center(

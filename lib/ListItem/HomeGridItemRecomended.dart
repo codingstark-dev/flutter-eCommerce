@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:shooops/UI/AcountUIComponent/CreditCardSetting.dart';
+import 'package:shooops/models/user.dart';
 
 // Widget buildGridFilesToExport(){
 //   return new StreamBuilder(
@@ -58,26 +62,141 @@
 //       }
 //     },
 //   );
+// // }
+// dynamic datatas;
+// final  firestore = Firestore.instance;
+// @override
+// void initState() {
+//   getData().then((result){
+// datatas = result;
+//   });
+// }
+// Future getData() async {
+//     try {
+
+//       if (firestore != null) {
+//         return  Firestore.instance.collection("Products").snapshots();
+//       }
+//       return false;
+//     } catch (e) {
+//       print(e.toString());
+//       return true;
+//     }
+//   }
+// Widget prodoo (){
+// StreamBuilder(
+//   stream: datatas ,
+//   builder: (BuildContext context, AsyncSnapshot snapshot){
+//     if (snapshot.hasData) {
+//    GridItem(
+//     description: snapshot.data.documents.data[""],
+//   );
+//     }else{
+
+//     }
+
+//   },
+// );
 // }
 
+class FileData {
+  FileData(
+      { this.description,
+       this.id,
+       this.img,
+       this.itemSale,
+       this.price,
+       this.rattingValue,
+       this.title});
 
-class GridItem{
-  
- final String id;
+  final String id;
   final String img;
   final String title;
   final String price;
   final String rattingValue;
   final String itemSale;
   final String description;
- GridItem(
+
+  // dynamic datatas;
+  // final firestore = Firestore.instance;
+  // @override
+  // void initState() {
+  //   getData().then((result) {
+  //     datatas = result;
+  //   });
+  // }
+
+  // Future getData() async {
+  //   try {
+  //     if (firestore != null) {
+  //       return Firestore.instance.collection("Products").snapshots();
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     print(e.toString());
+  //     return true;
+  //   }
+  // }
+
+// class FileData {
+
+// Future<FileData> getImagePostFromDocument(DocumentSnapshot snapshot) async {
+//      Map data = snapshot.data;
+//     FileData post =  FileData(
+//         img: data['Images']
+//         );
+//     return post;
+//   }
+  // Stream<List<FileData>> streamWeapons() {
+  //   var ref = firestore.collection('Products').document().collection('weapons');
+
+  //   return ref.snapshots().map((list) =>
+  //       list.documents.map((doc) => FileData.fromFirestore(doc)).toList());
+  // }
+
+  Stream<List<FileData>> streamDatas() {
+    var ref = Firestore.instance.collection('Products').snapshots();
+    return ref.map((data) =>
+        data.documents.map((doc) => FileData.fromFirestore(doc)).toList());
+
+    // print(doc.data["Images"])).toList());
+  }
+
+  factory FileData.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data;
+    return FileData(
+        id: data["id"],
+        title: data['ProName'],
+        price: data['Prices'].toString(),
+        img: data['Images'],
+        description: data["ProDecs"],
+        rattingValue: data["rattingValue"],
+        itemSale: data["itemSale"]);
+  }
+
+//   // FileData.fromSnapshot(DocumentSnapshot snapshot) {
+//   //   _id = snapshot.data['id'];
+//   //   _name = snapshot.data['ProName'];
+//   //   _file = snapshot.data['Images'];
+//   // }
+}
+
+class GridItem {
+  final String id;
+  final String img;
+  final String title;
+  final String price;
+  final String rattingValue;
+  final String itemSale;
+  final String description;
+  GridItem(
       {this.id,
-        this.img,
-        this.title,
-        this.price,
-        this.rattingValue,
-        this.itemSale,
-        this.description});
+      this.img,
+      this.title,
+      this.price,
+      this.rattingValue,
+      this.itemSale,
+      this.description});
 }
 
 List<GridItem> gridItemArray = [
@@ -89,7 +208,7 @@ List<GridItem> gridItemArray = [
     itemSale: "932 Sale",
     rattingValue: "4.8",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "2",
@@ -99,7 +218,7 @@ List<GridItem> gridItemArray = [
     itemSale: "892 Sale",
     rattingValue: "4.2",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "3",
@@ -109,7 +228,7 @@ List<GridItem> gridItemArray = [
     itemSale: "1422 Sale",
     rattingValue: "4.7",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "4",
@@ -119,7 +238,7 @@ List<GridItem> gridItemArray = [
     itemSale: "523 Sale",
     rattingValue: "4.4",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "5",
@@ -129,7 +248,7 @@ List<GridItem> gridItemArray = [
     itemSale: "130 Sale",
     rattingValue: "4.5",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "6",
@@ -139,7 +258,7 @@ List<GridItem> gridItemArray = [
     itemSale: "110 Sale",
     rattingValue: "4.8",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "7",
@@ -149,7 +268,7 @@ List<GridItem> gridItemArray = [
     itemSale: "654 Sale",
     rattingValue: "4.1",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
   GridItem(
     id: "8",
@@ -159,6 +278,6 @@ List<GridItem> gridItemArray = [
     itemSale: "1542 Sale",
     rattingValue: "4.1",
     description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen.....",
   ),
 ];
