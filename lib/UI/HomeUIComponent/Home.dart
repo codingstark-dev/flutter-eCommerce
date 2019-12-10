@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:shooops/Api/ProductApi.dart';
 import 'package:shooops/Library/carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:shooops/ListItem/HomeGridItemRecomended.dart';
@@ -11,6 +9,9 @@ import 'package:shooops/UI/HomeUIComponent/DetailProduct.dart';
 import 'package:shooops/UI/HomeUIComponent/FlashSale.dart';
 import 'package:shooops/UI/HomeUIComponent/MenuDetail.dart';
 import 'package:shooops/UI/HomeUIComponent/PromotionDetail.dart';
+import 'package:shooops/Api/ProductApi.dart';
+import 'package:shooops/models/productModel.dart';
+import 'package:shooops/screens/notify/productNotify.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> with TickerProviderStateMixin {
   /// Declare class GridItem from HomeGridItemReoomended.dart in folder ListItem
   GridItem gridItem;
-  List<FileData> files = new List();
+  List<FileData> files = List();
   bool isStarted = false;
   var hourssub, minutesub, secondsub;
 
@@ -73,11 +74,18 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     hours = new CountDown(new Duration(hours: 24));
     minutes = new CountDown(new Duration(hours: 1));
     seconds = new CountDown(new Duration(minutes: 1));
-    FileData().streamDatas();
-    print(FileData().streamDatas().listen((result)=> print(result)));
     onStartStopPress();
+    ProductApiNotifier productApiNotifier =
+        Provider.of<ProductApiNotifier>(context, listen: false);
+    getProduct(productApiNotifier);
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -100,7 +108,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
             );
           }));
     };
-  
+
     /// Navigation to PromoDetail.dart if user Click icon in Week Promotion
     var onClickWeekPromotion = () {
       Navigator.of(context).push(PageRouteBuilder(
@@ -234,7 +242,6 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     //     }
     //   }
     // }
-    final firebaseurl = ProductApi;
 
     /// ListView a WeekPromotion Component
     var promoHorizontalList = Container(
@@ -564,6 +571,9 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
 //       return true;
 //     }
 //   }
+    ProductApiNotifier productApiNotifier =
+        Provider.of<ProductApiNotifier>(context);
+
     ///  grid item in bottom of Category
     var grid = SingleChildScrollView(
       child: Container(
@@ -582,8 +592,17 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
               ),
             ),
 
-            /// To set GridView item
-
+            // /// To set GridView item
+            // GridView.count(
+            //     shrinkWrap: true,
+            //     padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            //     crossAxisSpacing: 10.0,
+            //     mainAxisSpacing: 17.0,
+            //     childAspectRatio: 0.545,
+            //     crossAxisCount: 2,
+            //     primary: false,
+            //     children: List.generate(productApiNotifier.productList.length, (index) {
+            //     return  Text(productApiNotifier.productList[0].img ?? "hello");}))
             GridView.count(
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -593,14 +612,25 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                 crossAxisCount: 2,
                 primary: false,
                 children: List.generate(
-                  files.length,
-                  (index) => ItemGrid(files[index]),
+                  productApiNotifier.productList.length,
+                  (index) => ItemGrid(
+                    index: index,
+                  ),
                 ))
+            // GridView.builder(
+            //   shrinkWrap: true,
+            //   padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            //   gridDelegate:
+            //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            //   itemBuilder: (BuildContext context, int index) {
+
+            //     return Text("data");
+            //   },
+            // )
           ],
         ),
       ),
     );
-
     return Scaffold(
       /// Use Stack to costume a appbar
       body: Stack(
@@ -647,178 +677,177 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 }
 
 //  Stream<List<FileData>> streamDatas() {
 //     var ref = Firestore.instance.collection('Products').snapshots();
 //     return ref.map((data) => data.documents.map((doc) => FileData.fromFirestore(doc)).toList());
 //   }
-/// ItemGrid in bottom item "Recomended" item
+/// ItemGrid in bottom item "Recomended" itemclass
 class ItemGrid extends StatelessWidget {
   /// Get data from HomeGridItem.....dart class
-  GridItem gridItem;
-  FileData file;
-  ItemGrid(this.file);
- List<FileData> files = new List();
+  // GridItem gridItem;
+  ProductApiCall productApiCall;
+  ItemGrid({this.productApiCall, this.index});
+
+  int index;
 
   @override
   Widget build(BuildContext context) {
-        final datas = Provider.of<FileData>(context);
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return  
-     InkWell(
-            onTap: () {
-              Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new DetailProductAll(file),
-                  transitionDuration: Duration(milliseconds: 900),
+    ProductApiNotifier productApiNotifier =
+        Provider.of<ProductApiNotifier>(context);
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, __, ___) => new DetailProductAll(productApiCall),
+            transitionDuration: Duration(milliseconds: 900),
 
-                  /// Set animation Opacity in route to DetailProductAll layout
-                  transitionsBuilder:
-                      (_, Animation<double> animation, __, Widget child) {
-                    return Opacity(
-                      opacity: animation.value,
-                      child: child,
-                    );
-                  }));
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF656565).withOpacity(0.15),
-                      blurRadius: 4.0,
-                      spreadRadius: 1.0,
+            /// Set animation Opacity in route to DetailProductAll layout
+            transitionsBuilder:
+                (_, Animation<double> animation, __, Widget child) {
+              return Opacity(
+                opacity: animation.value,
+                child: child,
+              );
+            }));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF656565).withOpacity(0.15),
+                blurRadius: 4.0,
+                spreadRadius: 1.0,
 //           offset: Offset(4.0, 10.0)
-                    )
-                  ]),
-              child: Wrap(
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      /// Set Animation image to DetailProductAll layout
-                      Hero(
-                        tag: "hero-grid-${datas.id}",
-                        child: Material(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                  opaque: false,
-                                  pageBuilder: (BuildContext context, _, __) {
-                                    return new Material(
-                                      color: Colors.black54,
-                                      child: Container(
-                                        padding: EdgeInsets.all(30.0),
-                                        child: InkWell(
-                                          child: Hero(
-                                              tag: "hero-grid-${datas.id}",
-                                              child: Image.network(
-                                                datas.img,
-                                                width: 300.0,
-                                                height: 300.0,
-                                                alignment: Alignment.center,
-                                                fit: BoxFit.contain,
-                                              )),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  transitionDuration: Duration(milliseconds: 500)));
-                            },
-                            child: Container(
-                              height: mediaQueryData.size.height / 3.3,
-                              width: 200.0,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(7.0),
-                                      topRight: Radius.circular(7.0)),
-                                  image: DecorationImage(
-                                      image: NetworkImage(datas.img),
-                                      fit: BoxFit.cover)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 7.0)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: Text(
-                          datas.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              letterSpacing: 0.5,
-                              color: Colors.black54,
-                              fontFamily: "Sans",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13.0),
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 1.0)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: Text(
-                          datas.price,
-                          style: TextStyle(
-                              fontFamily: "Sans",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14.0),
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  datas.rattingValue,
-                                  style: TextStyle(
-                                      fontFamily: "Sans",
-                                      color: Colors.black26,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12.0),
+              )
+            ]),
+        child: Wrap(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                /// Set Animation image to DetailProductAll layout
+                Hero(
+                  tag: "hero-grid-${productApiNotifier.productList[index].id}",
+                  child: Material(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (BuildContext context, _, __) {
+                              return new Material(
+                                color: Colors.black54,
+                                child: Container(
+                                  padding: EdgeInsets.all(30.0),
+                                  child: InkWell(
+                                    child: Hero(
+                                        tag:
+                                            "hero-grid-${productApiNotifier.productList[index].id}",
+                                        child: Image.network(
+                                          productApiNotifier
+                                              .productList[index].img,
+                                          width: 300.0,
+                                          height: 300.0,
+                                          alignment: Alignment.center,
+                                          fit: BoxFit.contain,
+                                        )),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 14.0,
-                                )
-                              ],
-                            ),
-                            Text(
-                              datas.itemSale,
-                              style: TextStyle(
-                                  fontFamily: "Sans",
-                                  color: Colors.black26,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.0),
-                            )
-                          ],
-                        ),
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 500)));
+                      },
+                      child: Container(
+                        height: mediaQueryData.size.height / 3.3,
+                        width: 200.0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(7.0),
+                                topRight: Radius.circular(7.0)),
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    productApiNotifier.productList[index].img),
+                                fit: BoxFit.cover)),
                       ),
+                    ),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(top: 7.0)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Text(
+                    productApiNotifier.productList[index].title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        letterSpacing: 0.5,
+                        color: Colors.black54,
+                        fontFamily: "Sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13.0),
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(top: 1.0)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Text(
+                    productApiNotifier.productList[index].price,
+                    style: TextStyle(
+                        fontFamily: "Sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            productApiNotifier.productList[index].rattingValue,
+                            style: TextStyle(
+                                fontFamily: "Sans",
+                                color: Colors.black26,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.0),
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 14.0,
+                          )
+                        ],
+                      ),
+                      Text(
+                        productApiNotifier.productList[index].itemSale,
+                        style: TextStyle(
+                            fontFamily: "Sans",
+                            color: Colors.black26,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12.0),
+                      )
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-
-      }
-    
+          ],
+        ),
+      ),
+    );
   }
-
+}
 
 /// Component FlashSaleItem
 class FlashSaleItem extends StatelessWidget {

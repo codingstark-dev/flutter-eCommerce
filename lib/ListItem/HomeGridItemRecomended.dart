@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:shooops/UI/AcountUIComponent/CreditCardSetting.dart';
-import 'package:shooops/models/user.dart';
+import 'package:meta/meta.dart';
 
 // Widget buildGridFilesToExport(){
 //   return new StreamBuilder(
@@ -99,15 +97,16 @@ import 'package:shooops/models/user.dart';
 // );
 // }
 
+
 class FileData {
   FileData(
-      { this.description,
-       this.id,
-       this.img,
-       this.itemSale,
-       this.price,
-       this.rattingValue,
-       this.title});
+      {this.description,
+      this.id,
+      this.img,
+      this.itemSale,
+      this.price,
+      this.rattingValue,
+      this.title});
 
   final String id;
   final String img;
@@ -154,25 +153,63 @@ class FileData {
   //       list.documents.map((doc) => FileData.fromFirestore(doc)).toList());
   // }
 
-  Stream<List<FileData>> streamDatas() {
-    var ref = Firestore.instance.collection('Products').snapshots();
-    return ref.map((data) =>
-        data.documents.map((doc) => FileData.fromFirestore(doc)).toList());
+  // Stream<List<FileData>> streamDatas() {
+  //   var ref = Firestore.instance.collection('Products').snapshots();
+  //   return ref.map((data) =>
+  //       data.documents.map((doc) => FileData.fromFirestore(doc)).toList());
 
-    // print(doc.data["Images"])).toList());
+  //   // print(doc.data["Images"])).toList());
+  // // }
+  // factory FileData.fromMap(Map<String, dynamic> data) {
+  //   if (data == null) {
+  //     return null;
+  //   }
+  //   final _id = data["id"];
+  //   final _title = data["ProName"];
+  //   final _price = data["Prices"];
+  //   final _image = data["Images"];
+  //   final _description = data["ProDecs"];
+  //   final _rating = data["rattingValue"];
+  //   final _itemsale = data["itemSale"];
+  //   return FileData(
+  //       id: _id,
+  //       price: _price,
+  //       description: _description,
+  //       img: _image,
+  //       title: _title,
+  //       rattingValue: _rating,
+  //       itemSale: _itemsale);
+  // }
+
+  // Stream readData() {
+  //   final ref = Firestore.instance.collection("Products");
+  //   final snapshot = ref.snapshots();
+  //   return snapshot.map((snapshot) => snapshot.documents
+  //       .map((snapshot) => sFileData.fromMap(snapshot.data)).toList());}
+
+  // Stream<List<FileData>> readData() => _collectionStream(
+  //       builder: (data) => FileData.fromMap(data),
+  //     );
+  Stream<List<T>> _collectionStream<T>({
+    @required T builder(Map<String, dynamic> data),
+  }) {
+    final reference = Firestore.instance.collection("Products");
+    final snapshots = reference.snapshots();
+    return snapshots.map((snapshot) =>
+        snapshot.documents.map((snapshot) => builder(snapshot.data)).toList());
   }
 
-  factory FileData.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data;
-    return FileData(
-        id: data["id"],
-        title: data['ProName'],
-        price: data['Prices'].toString(),
-        img: data['Images'],
-        description: data["ProDecs"],
-        rattingValue: data["rattingValue"],
-        itemSale: data["itemSale"]);
-  }
+  // factory FileData.fromFirestore(DocumentSnapshot doc) {
+  //   Map data = doc.data;
+  //   return FileData(
+  //       id: data["id"],
+  //       title: data['ProName'],
+  //       price: data['Prices'].toString(),
+  //       img: data['Images'],
+  //       description: data["ProDecs"],
+  //       rattingValue: data["rattingValue"],
+  //       itemSale: data["itemSale"]);
+  // }
 
 //   // FileData.fromSnapshot(DocumentSnapshot snapshot) {
 //   //   _id = snapshot.data['id'];

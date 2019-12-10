@@ -1,48 +1,63 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shooops/models/productModel.dart';
+import 'package:shooops/screens/notify/productNotify.dart';
 
-class ProductApi extends ChangeNotifier {
-  final Firestore firestore = Firestore.instance;
+getProduct(ProductApiNotifier productApiNotifier) async {
+  QuerySnapshot snapshot = await Firestore.instance.collection('Products').getDocuments();
 
-  // ProductApi.formSnapshot(
-  //   DocumentSnapshot snapshot,
-  // ) {
-  //   Map data = snapshot.data;
-  //   productName = data["ProName"];
-  String productName;
-  String productPrice;
-  String productDescription;
-  String productColor;
-  final String productSize;
-  String productImages;
+  List<ProductApiCall> _productList = [];
 
-  ProductApi(this.productName, this.productPrice, this.productDescription,
-      this.productColor, this.productSize, this.productImages);
-  Future geeetData() async {
-    try {
-      if (firestore != null) {
-        return Firestore.instance.collection("Products").snapshots();
-      }
-      return false;
-    } catch (e) {
-      print(e.toString());
-      return true;
-    }
-  }
+  snapshot.documents.forEach((document) {
+    ProductApiCall produts = ProductApiCall.fromMap(document.data);
+    _productList.add(produts);
+  });
 
-  Future get getdata async {
-    await for (var snapshot in firestore.collection("Products").snapshots()) {
-      for (var snapshot in snapshot.documents) {
-        print(snapshot.data["ProName"]);
-        productName = snapshot.data["ProName"];
-        productDescription = snapshot.data["ProDecs"];
-        productColor = snapshot.data["ProColor"];
-        productPrice = snapshot.data["Prices"];
-        productImages = snapshot.data["Images"];
-      }
-    }
-  }
+  productApiNotifier.productList = _productList;
 }
+
+// class ProductApi extends ChangeNotifier {
+//   final Firestore firestore = Firestore.instance;
+
+//   // ProductApi.formSnapshot(
+//   //   DocumentSnapshot snapshot,
+//   // ) {
+//   //   Map data = snapshot.data;
+//   //   productName = data["ProName"];
+//   String productName;
+//   String productPrice;
+//   String productDescription;
+//   String productColor;
+//   final String productSize;
+//   String productImages;
+
+//   ProductApi(this.productName, this.productPrice, this.productDescription,
+//       this.productColor, this.productSize, this.productImages);
+//   Future geeetData() async {
+//     try {
+//       if (firestore != null) {
+//         return Firestore.instance.collection("Products").snapshots();
+//       }
+//       return false;
+//     } catch (e) {
+//       print(e.toString());
+//       return true;
+//     }
+//   }
+
+//   Future get getdata async {
+//     await for (var snapshot in firestore.collection("Products").snapshots()) {
+//       for (var snapshot in snapshot.documents) {
+//         print(snapshot.data["ProName"]);
+//         productName = snapshot.data["ProName"];
+//         productDescription = snapshot.data["ProDecs"];
+//         productColor = snapshot.data["ProColor"];
+//         productPrice = snapshot.data["Prices"];
+//         productImages = snapshot.data["Images"];
+//       }
+//     }
+//   }
+// }
 
 // class ProductApi {
 //   final String productName;

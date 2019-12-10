@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import 'package:shooops/Api/ProductApi.dart';
 import 'package:shooops/Library/carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:shooops/ListItem/HomeGridItemRecomended.dart';
@@ -7,35 +9,49 @@ import 'package:shooops/UI/CartUIComponent/Delivery.dart';
 
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:shooops/UI/HomeUIComponent/ReviewLayout.dart';
+import 'package:shooops/models/productModel.dart';
+import 'package:shooops/screens/notify/productNotify.dart';
 
 class DetailProductAll extends StatefulWidget {
   // GridItem gridItem;
   FileData fileData;
-
-  DetailProductAll(this.fileData);
+  ProductApiCall productApiCall;
+  DetailProductAll(this.productApiCall);
 
   @override
-  _DetailProductAllState createState() => _DetailProductAllState(fileData);
+  _DetailProductAllState createState() =>
+      _DetailProductAllState(productApiCall);
 }
 
 /// Detail Product for Recomended grid in home screen
 class _DetailProductAllState extends State<DetailProductAll> {
   num rating = 3.5;
   int starCount = 5;
+
   /// Declaration List item HomeGridItemRe....dart Class
-  final FileData fileData;
-  _DetailProductAllState(this.fileData);
+  final ProductApiCall productApiCall;
+  _DetailProductAllState(this.productApiCall);
 
   @override
   static BuildContext ctx;
   int valueItemChart = 0;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    ProductApiNotifier productApiNotifier =
+        Provider.of<ProductApiNotifier>(context, listen: false);
+    getProduct(productApiNotifier);
+    super.initState();
+  }
 
   /// BottomSheet for view more in specification
+
   void _bottomSheet() {
     showModalBottomSheet(
         context: context,
         builder: (builder) {
+          ProductApiNotifier productApiNotifier =
+              Provider.of<ProductApiNotifier>(context);
           return SingleChildScrollView(
             child: Container(
               color: Colors.black26,
@@ -62,7 +78,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                         padding: const EdgeInsets.only(
                             top: 20.0, left: 20.0, right: 20.0, bottom: 20.0),
                         child: Text(
-                            fileData.description,
+                            productApiNotifier.productList[0].description,
                             style: _detailText),
                       ),
                       Padding(
@@ -118,7 +134,8 @@ class _DetailProductAllState extends State<DetailProductAll> {
 
   /// Variable Component UI use in bottom layout "Top Rated Products"
   var _suggestedItem = Padding(
-    padding: const EdgeInsets.only(left: 15.0, right: 20.0, top: 30.0, bottom: 20.0),
+    padding:
+        const EdgeInsets.only(left: 15.0, right: 20.0, top: 30.0, bottom: 20.0),
     child: Container(
       height: 280.0,
       child: Column(
@@ -191,6 +208,8 @@ class _DetailProductAllState extends State<DetailProductAll> {
   );
 
   Widget build(BuildContext context) {
+    ProductApiNotifier productApiNotifier =
+        Provider.of<ProductApiNotifier>(context);
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -204,11 +223,11 @@ class _DetailProductAllState extends State<DetailProductAll> {
               alignment: AlignmentDirectional(-1.0, -0.8),
               children: <Widget>[
                 IconButton(
-                  onPressed: null,
+                    onPressed: null,
                     icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.black26,
-                )),
+                      Icons.shopping_cart,
+                      color: Colors.black26,
+                    )),
                 CircleAvatar(
                   radius: 10.0,
                   backgroundColor: Colors.red,
@@ -245,7 +264,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                   Container(
                     height: 300.0,
                     child: Hero(
-                      tag: "hero-grid-${fileData.id}",
+                      tag: "hero-grid-${productApiNotifier.productList[0].id}",
                       child: Material(
                         child: new Carousel(
                           dotColor: Colors.black26,
@@ -254,14 +273,15 @@ class _DetailProductAllState extends State<DetailProductAll> {
                           autoplay: false,
                           boxFit: BoxFit.cover,
                           images: [
-                            AssetImage(fileData.img),
-                            AssetImage(fileData.img),
-                            AssetImage(fileData.img),
+                            NetworkImage(productApiNotifier.productList[0].img),
+                            NetworkImage(productApiNotifier.productList[0].img),
+                            NetworkImage(productApiNotifier.productList[0].img),
                           ],
                         ),
                       ),
                     ),
                   ),
+
                   /// Background white title,price and ratting
                   Container(
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -277,12 +297,12 @@ class _DetailProductAllState extends State<DetailProductAll> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            fileData.title,
+                            productApiNotifier.productList[0].title,
                             style: _customTextStyle,
                           ),
                           Padding(padding: EdgeInsets.only(top: 5.0)),
                           Text(
-                            fileData.price,
+                            productApiNotifier.productList[0].price,
                             style: _customTextStyle,
                           ),
                           Padding(padding: EdgeInsets.only(top: 10.0)),
@@ -303,8 +323,8 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                       width: 75.0,
                                       decoration: BoxDecoration(
                                         color: Colors.lightGreen,
-                                        borderRadius: BorderRadius
-                                            .all(Radius.circular(20.0)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
                                       ),
                                       child: Row(
                                         crossAxisAlignment:
@@ -313,7 +333,8 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            fileData.rattingValue,
+                                            productApiNotifier
+                                                .productList[0].rattingValue,
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
@@ -333,7 +354,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 15.0),
                                   child: Text(
-                                    fileData.itemSale,
+                                    productApiNotifier.productList[0].itemSale,
                                     style: TextStyle(
                                         color: Colors.black54,
                                         fontSize: 13.0,
@@ -347,6 +368,7 @@ class _DetailProductAllState extends State<DetailProductAll> {
                       ),
                     ),
                   ),
+
                   /// Background white for chose Size and Color
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
@@ -437,27 +459,35 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                 style: _subHeaderCustomStyle,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 15.0,
-                                  right: 20.0,
-                                  bottom: 10.0,
-                                  left: 20.0),
-                              child: Text(fileData.description,
-                                  style: _detailText),
-                            ),
-                            Center(
-                              child: InkWell(
-                                onTap: () {
-                                  _bottomSheet();
-                                },
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 15.0,
+                                    right: 20.0,
+                                    bottom: 10.0,
+                                    left: 20.0),
                                 child: Text(
-                                  "View More",
-                                  style: TextStyle(
-                                    color: Colors.indigoAccent,
-                                    fontSize: 15.0,
-                                    fontFamily: "Gotik",
-                                    fontWeight: FontWeight.w700,
+                                    productApiNotifier
+                                        .productList[0].description,
+                                    style: _detailText),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () {
+                                    _bottomSheet();
+                                  },
+                                  child: Text(
+                                    "View More",
+                                    style: TextStyle(
+                                      color: Colors.indigoAccent,
+                                      fontSize: 15.0,
+                                      fontFamily: "Gotik",
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -472,10 +502,10 @@ class _DetailProductAllState extends State<DetailProductAll> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Container(
-                      height:415.0,
+                      height: 415.0,
                       width: 600.0,
                       decoration:
-                      BoxDecoration(color: Colors.white, boxShadow: [
+                          BoxDecoration(color: Colors.white, boxShadow: [
                         BoxShadow(
                           color: Color(0xFF656565).withOpacity(0.15),
                           blurRadius: 1.0,
@@ -483,31 +513,52 @@ class _DetailProductAllState extends State<DetailProductAll> {
                         )
                       ]),
                       child: Padding(
-                        padding: EdgeInsets.only(top: 20.0,left: 20.0),
+                        padding: EdgeInsets.only(top: 20.0, left: 20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('Reviews',style: _subHeaderCustomStyle,),
+                                Text(
+                                  'Reviews',
+                                  style: _subHeaderCustomStyle,
+                                ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left:20.0,top: 15.0,bottom: 15.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, top: 15.0, bottom: 15.0),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       InkWell(
                                         child: Padding(
-                                            padding:EdgeInsets.only(top:2.0,right: 3.0),
-                                            child: Text('View All',style: _subHeaderCustomStyle.copyWith(color: Colors.indigoAccent,fontSize: 14.0),)),
+                                            padding: EdgeInsets.only(
+                                                top: 2.0, right: 3.0),
+                                            child: Text(
+                                              'View All',
+                                              style: _subHeaderCustomStyle
+                                                  .copyWith(
+                                                      color:
+                                                          Colors.indigoAccent,
+                                                      fontSize: 14.0),
+                                            )),
                                         onTap: () {
-                                          Navigator.of(context).push(PageRouteBuilder(pageBuilder: (_,__,___)=>ReviewsAll()));
+                                          Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                  pageBuilder: (_, __, ___) =>
+                                                      ReviewsAll()));
                                         },
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 15.0,top: 2.0),
-                                        child: Icon(Icons.arrow_forward_ios,size: 18.0,color: Colors.black54,),
+                                        padding: const EdgeInsets.only(
+                                            right: 15.0, top: 2.0),
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 18.0,
+                                          color: Colors.black54,
+                                        ),
                                       )
                                     ],
                                   ),
@@ -530,42 +581,51 @@ class _DetailProductAllState extends State<DetailProductAll> {
                                     ]),
                               ],
                             ),
-                            Padding(padding: EdgeInsets.only(left: 0.0,right: 20.0,top: 15.0,bottom: 7.0),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 0.0,
+                                  right: 20.0,
+                                  top: 15.0,
+                                  bottom: 7.0),
                               child: _line(),
                             ),
                             _buildRating('18 Nov 2018',
                                 'Item delivered in good condition. I will recommend to other buyer.',
-                                    (rating) {
-                                  setState(() {
-                                    this.rating = rating;
-                                  });
-                                },
-                                "assets/avatars/avatar-1.jpg"
-                            ),
-                            Padding(padding: EdgeInsets.only(left: 0.0,right: 20.0,top: 15.0,bottom: 7.0),
+                                (rating) {
+                              setState(() {
+                                this.rating = rating;
+                              });
+                            }, "assets/avatars/avatar-1.jpg"),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 0.0,
+                                  right: 20.0,
+                                  top: 15.0,
+                                  bottom: 7.0),
                               child: _line(),
                             ),
                             _buildRating('18 Nov 2018',
                                 'Item delivered in good condition. I will recommend to other buyer.',
-                                    (rating) {
-                                  setState(() {
-                                    this.rating = rating;
-                                  });
-                                },
-                                "assets/avatars/avatar-4.jpg"
-                            ),
-                            Padding(padding: EdgeInsets.only(left: 0.0,right: 20.0,top: 15.0,bottom: 7.0),
+                                (rating) {
+                              setState(() {
+                                this.rating = rating;
+                              });
+                            }, "assets/avatars/avatar-4.jpg"),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 0.0,
+                                  right: 20.0,
+                                  top: 15.0,
+                                  bottom: 7.0),
                               child: _line(),
                             ),
                             _buildRating('18 Nov 2018',
                                 'Item delivered in good condition. I will recommend to other buyer.',
-                                    (rating) {
-                                  setState(() {
-                                    this.rating = rating;
-                                  });
-                                },
-                                "assets/avatars/avatar-2.jpg"
-                            ),
+                                (rating) {
+                              setState(() {
+                                this.rating = rating;
+                              });
+                            }, "assets/avatars/avatar-2.jpg"),
                             Padding(padding: EdgeInsets.only(bottom: 20.0)),
                           ],
                         ),
@@ -664,16 +724,15 @@ class _DetailProductAllState extends State<DetailProductAll> {
     );
   }
 
-
-  Widget _buildRating(String date, String details, Function changeRating,String image) {
+  Widget _buildRating(
+      String date, String details, Function changeRating, String image) {
     return ListTile(
       leading: Container(
         height: 45.0,
         width: 45.0,
         decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage(image),fit: BoxFit.cover),
-            borderRadius: BorderRadius.all(Radius.circular(50.0))
-        ),
+            image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+            borderRadius: BorderRadius.all(Radius.circular(50.0))),
       ),
       title: Row(
         children: <Widget>[
@@ -690,12 +749,13 @@ class _DetailProductAllState extends State<DetailProductAll> {
           )
         ],
       ),
-      subtitle: Text(details,style: _detailText,),
+      subtitle: Text(
+        details,
+        style: _detailText,
+      ),
     );
   }
 }
-
-
 
 /// RadioButton for item choose in size
 class RadioButtonCustom extends StatefulWidget {
@@ -719,17 +779,17 @@ class _RadioButtonCustomState extends State<RadioButtonCustom> {
       padding: const EdgeInsets.only(top: 10.0),
       child: InkWell(
         onTap: () {
-        setState(() {
-              if (itemSelected == false) {
-                setState(() {
-                  itemSelected = true;
-                });
-              } else if (itemSelected == true) {
-                setState(() {
-                  itemSelected = false;
-                });
-              }
-            });
+          setState(() {
+            if (itemSelected == false) {
+              setState(() {
+                itemSelected = true;
+              });
+            } else if (itemSelected == true) {
+              setState(() {
+                itemSelected = false;
+              });
+            }
+          });
         },
         child: Container(
           height: 37.0,
@@ -780,7 +840,6 @@ class _RadioButtonColorState extends State<RadioButtonColor> {
             });
           } else if (itemSelected == true) {
             setState(() {
-
               itemSelected = false;
             });
           }
@@ -908,8 +967,8 @@ class FavoriteItem extends StatelessWidget {
   }
 }
 
-Widget _line(){
-  return  Container(
+Widget _line() {
+  return Container(
     height: 0.9,
     width: double.infinity,
     color: Colors.black12,

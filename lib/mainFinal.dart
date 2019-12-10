@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shooops/ListItem/HomeGridItemRecomended.dart';
 import 'package:shooops/models/user.dart';
 import 'package:shooops/screens/Wrapper.dart';
+import 'package:shooops/screens/notify/productNotify.dart';
 import 'package:shooops/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,9 @@ class _MyAppState extends State<MyApp> {
           value: AuthService().user,
         ),
           Provider<AuthService>(builder: (context) => AuthService()),
+            ChangeNotifierProvider(
+          builder: (context) => ProductApiNotifier(),
+        ),
           // Provider<FileData>(builder: (BuildContext context)=> FileData())
       ],
           child: MaterialApp(
